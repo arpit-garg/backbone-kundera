@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>I have a back bone</title>
+</head>
+<body>
+	<button id="view-books">View</button>
+	<ul id="friends-list">
+	</ul>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+	<script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.4/underscore-min.js"></script>
+	<script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js"></script>
+	<script src="kundera.js"></script>
+	<script>
+	(function ($) {
+		
+		Friend = Backbone.Model.extend({
+			
+			name: null
+		});
+
+		Friends = Backbone.Collection.extend({
+			
+			initialize: function (models, options) {
+				this.bind("add", options.view.addFriendLi);
+			}
+		});
+
+		AppView = Backbone.View.extend({
+			el: $("body"),
+			initialize: function () {
+				this.friends = new Friends( null, {view: this });
+			},
+			events: {
+				//alert("before initialize");
+				"click #view-books": "initialise",
+			},
+			showPrompt: function () {
+				var friend_name = prompt("who is your friend?");
+				var friend_model = new Friend({ name: friend_name });
+				this.friends.add( friend_model );
+			},
+			addFriendLi: function (model) {
+				
+				$("#friends-list").append("<li>" + model.get('name') + "</li>");
+			},
+		
+
+			initialise: function() {
+		        alert("inside initialise");
+				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE",
+		                        "showPrompt");
+				alert("after initialise");
+
+			}
+
+
+
+		/*	selectQueryE: function() {
+				alert("inside selectQuery");
+				em.createQuery("select * from Book", null,"selectSuccess","selectFailure");
+				alert("inside selectQuery");
+			},
+
+		    selectSuccess: function(resp){
+		     	 console.log(resp);
+		     
+			},
+
+
+			selectFailure:function(resp){
+		     	 console.log(resp);
+		     
+			}  */ 	
+
+		});
+
+		function selectQueryE() {
+			alert("inside selectQuery");
+			em.createQuery("select b from Book b", null,"selectSuccess","selectFailure");
+			alert("inside selectQuery");
+			}
+
+    	function selectSuccess(resp){
+         	 console.log(resp);
+         
+		}
+
+
+		function selectFailure(resp){
+         	 console.log(resp);
+		}
+
+
+
+		var appview = new AppView;
+
+	})(jQuery);
+
+		
+
+</script>
+</body>
+</html>
+
+
+
+
+    

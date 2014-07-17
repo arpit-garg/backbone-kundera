@@ -7,13 +7,13 @@
 	<button id="view-books">View</button>
 	<ul id="friends-list">
 	</ul>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-	<script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.4/underscore-min.js"></script>
-	<script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js"></script>
-	<script src="kundera.js"></script>
+	<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="underscore.js"></script>
+	<script type="text/javascript" src="backbone.js"></script>
+	
+	<script type="text/javascript" src="kundera.js"></script>
 	<script>
-	(function ($) {
-		
+	(function ($) {		
 		Friend = Backbone.Model.extend({
 			
 			name: null
@@ -35,11 +35,12 @@
 				//alert("before initialize");
 				"click #view-books": "initialise",
 			},
-			showPrompt: function () {
+		/*	showPrompt: function () {
 				var friend_name = prompt("who is your friend?");
 				var friend_model = new Friend({ name: friend_name });
 				this.friends.add( friend_model );
-			},
+			}, */
+
 			addFriendLi: function (model) {
 				
 				$("#friends-list").append("<li>" + model.get('name') + "</li>");
@@ -48,8 +49,8 @@
 
 			initialise: function() {
 		        alert("inside initialise");
-				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE",
-		                        "showPrompt");
+				Persistence.createEntityManagerFactory("twissandra", null, "showPrompt",
+		                        "selectQueryE");
 				alert("after initialise");
 
 			}
@@ -75,7 +76,13 @@
 
 		});
 
-		function selectQueryE() {
+		
+
+		var appview = new AppView;
+
+	})(jQuery);
+
+	function selectQueryE(resp) {
 			alert("inside selectQuery");
 			em.createQuery("select b from Book b", null,"selectSuccess","selectFailure");
 			alert("inside selectQuery");
@@ -91,13 +98,12 @@
          	 console.log(resp);
 		}
 
-
-
-		var appview = new AppView;
-
-	})(jQuery);
-
-		
+		function showPrompt(resp) {
+				var friend_name = prompt("who is your friend?");
+				var friend_model = new Friend({ name: friend_name });
+				Backbone.View.addFriendLi(friend_model);
+				//this.friends.add( friend_model );
+			}	
 
 </script>
 </body>

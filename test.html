@@ -4,14 +4,18 @@
 	<title>I have a back bone</title>
 </head>
 <body>
+	<div>	
 	<button id="view-books">View</button>
+	</div>
+	<div>
+	<button id="display">Display</button>
+	</div>
 	<ul id="friends-list">
 	</ul>
-	<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="underscore.js"></script>
-	<script type="text/javascript" src="backbone.js"></script>
-	
-	<script type="text/javascript" src="kundera.js"></script>
+	<script type="text/javascript" src="lib/jquery.js"></script>
+	<script type="text/javascript" src="lib/underscore.js"></script>
+	<script type="text/javascript" src="lib/backbone.js"></script>
+	<script type="text/javascript" src="js/kundera.js"></script>
 	<script>
 	(function ($) {		
 		Friend = Backbone.Model.extend({
@@ -34,42 +38,43 @@
 			events: {
 				//alert("before initialize");
 				"click #view-books": "initialise",
+				"click #display": "showPrompt",
 			},
-		/*	showPrompt: function () {
+			showPrompt: function () {
 				var friend_name = prompt("who is your friend?");
 				var friend_model = new Friend({ name: friend_name });
 				this.friends.add( friend_model );
-			}, */
+			},
 
 			addFriendLi: function (model) {
 				
 				$("#friends-list").append("<li>" + model.get('name') + "</li>");
 			},
 		
-
-			initialise: function() {
+			
+			initialise : function() {
 		        alert("inside initialise");
-				Persistence.createEntityManagerFactory("twissandra", null, "showPrompt",
-		                        "selectQueryE");
+				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE",
+		                        "showPrompt");
 				alert("after initialise");
 
 			}
 
 
 
-		/*	selectQueryE: function() {
+      		/*	selectQueryE : function() {
 				alert("inside selectQuery");
 				em.createQuery("select * from Book", null,"selectSuccess","selectFailure");
 				alert("inside selectQuery");
 			},
 
-		    selectSuccess: function(resp){
+		    selectSuccess :function(resp){
 		     	 console.log(resp);
 		     
 			},
 
 
-			selectFailure:function(resp){
+			selectFailure :function(resp){
 		     	 console.log(resp);
 		     
 			}  */
@@ -81,6 +86,8 @@
 		var appview = new AppView;
 
 	})(jQuery);
+	
+	var obj = {};
 
 	function selectQueryE(resp) {
 			alert("inside selectQuery");
@@ -88,9 +95,10 @@
 			alert("inside selectQuery");
 			}
 
-    	function selectSuccess(resp){
+    		function selectSuccess(resp){
          	 console.log(resp);
-         
+		 obj = Kundera.fromJSONObject(resp);
+         	 console.log(obj);
 		}
 
 
@@ -99,12 +107,15 @@
 		}
 
 		function showPrompt(resp) {
+				obj["books"]
+				for(var i in obj){}
 				var friend_name = prompt("who is your friend?");
 				var friend_model = new Friend({ name: friend_name });
 				Backbone.View.addFriendLi(friend_model);
 				//this.friends.add( friend_model );
-			}	
+		} 
 
+		
 </script>
 </body>
 </html>

@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>I have a back bone</title>
+	<title>backbone-kundera test</title>
 </head>
 <body>
 	<div>	
 	<button id="view-books">View</button>
 	</div>
 	<div>
-	<button id="display">Display</button>
+	<button id="enter-books">Enter Books</button>
 	</div>
+	
 	<ul id="friends-list">
 	</ul>
 	<script type="text/javascript" src="lib/jquery.js"></script>
@@ -18,12 +19,14 @@
 	<script type="text/javascript" src="js/kundera.js"></script>
 	<script>
 	(function ($) {		
-		Friend = Backbone.Model.extend({
+		Book = Backbone.Model.extend({
 			
-			name: null
+			author: null,
+			isbn: null,
+			publication: null
 		});
 
-		Friends = Backbone.Collection.extend({
+		Books = Backbone.Collection.extend({
 			
 			initialize: function (models, options) {
 				this.bind("add", options.view.addFriendLi);
@@ -33,30 +36,39 @@
 		AppView = Backbone.View.extend({
 			el: $("body"),
 			initialize: function () {
-				this.friends = new Friends( null, {view: this });
+				this.books = new Books( null, {view: this });
 			},
 			events: {
 				//alert("before initialize");
 				"click #view-books": "initialise",
-				"click #display": "showPrompt",
+				"click #enter-books": "showPrompt",
 			},
 			showPrompt: function () {
-				var friend_name = prompt("who is your friend?");
-				var friend_model = new Friend({ name: friend_name });
-				this.friends.add( friend_model );
+				var book_author = prompt("who is the author of the book?");
+				var book_isbn = prompt("what is the ISBN of book?");
+				var book_pub = prompt("what is the name of the publication?");
+				var book_model = {};
+				book_model["author"] = book_author;
+				book_model["isbn"] = book_isbn;
+				book_model["publication"] = book_pub;
+				//var book_model = new Book({ author:book_author, isbn: book_isbn, publication: book_pub});
+				//var objc = JSON.stringify(book_model);				
+				console.log(Kundera.createJSONObject(book_model));
+				em.persist(book_model, "Book");
+				this.books.add( book_model );
 			},
 
 			addFriendLi: function (model) {
 				
-				$("#friends-list").append("<li>" + model.get('name') + "</li>");
+				$("#friends-list").append("<li>" + model.get('author') + "</li><li>" + model.get('isbn') + "</li><li>" + model.get('publication') + "</li>");
 			},
 		
 			
 			initialise : function() {
-		        alert("inside initialise");
+		        //alert("inside initialise");
 				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE",
-		                        "showPrompt");
-				alert("after initialise");
+		                        "display");
+			//	alert("after initialise");
 
 			}
 
@@ -90,16 +102,16 @@
 	var obj = {};
 
 	function selectQueryE(resp) {
-			alert("inside selectQuery");
+			//alert("inside selectQuery");
 			em.createQuery("select b from Book b", null,"selectSuccess","selectFailure");
-			alert("inside selectQuery");
+			//alert("inside selectQuery");
 			}
 
     		function selectSuccess(resp){
-         	 console.log(resp);
+         	 //console.log(resp);
 		 obj = Kundera.fromJSONObject(resp);
-         	 console.log(obj);
-		showPrompt(obj)
+         	// console.log(obj);
+		//showPrompt(obj)
 		}
 
 
@@ -107,19 +119,14 @@
          	 console.log(resp);
 		}
 
-		function showPrompt(obj) {
+		function display(obj) {
 				var array = obj["book"];
-				var html = "<table><th>Author</th><th>ISBN</th><th>Publication</th>";
+				var html = "<table><th>Author</th><th>ISBN</th><th>Publication</th><th>Options</th>";
 				for (var i in array){
 					//html += "<table>";
-					html += "<tr><td>" + array[i]["author"] + "</td><td>" + array[i]["isbn"] + "</td><td>" + 							array[i]["publication"] + "</td></tr>" 
-				
-					 	
-					//document.write(array[i]["author"]);
-					//document.write(array[i]["isbn"]);
-					//document.write(array[i]["publication"]);
-					
-				}
+					html += "<tr><td>" + array[i]["author"] + "</td><td>" + array[i]["isbn"] + "</td><td>" +array[i]["publication"] + "</td><td><div><button>Update</button><button>Delete</button></div></td></tr>" 
+	
+}
 
 		html += "</html>"
 		document.getElementById("data").innerHTML = html;		
@@ -132,8 +139,3 @@
 <div id ="data"></div>
 </body>
 </html>
-
-
-
-
-    

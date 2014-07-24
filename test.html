@@ -15,10 +15,15 @@
 	</ul>
 	<script type="text/javascript" src="lib/jquery.js"></script>
 	<script type="text/javascript" src="lib/underscore.js"></script>
-	<script type="text/javascript" src="lib/backbone.js"></script>
-	<script type="text/javascript" src="js/kundera.js"></script>
+<script type="text/javascript" src="js/kundera.js"></script>	
+<script type="text/javascript" src="lib/backbone.js"></script>
+	
 	<script>
-	(function ($) {		
+	(function ($) {	
+		
+jQuery( document ).ready(function() {
+window.setTimeout("start()", 2000);
+	});
 		Book = Backbone.Model.extend({
 			
 			author: null,
@@ -30,20 +35,27 @@
 			
 			initialize: function (models, options) {
 				this.bind("add", options.view.addFriendLi);
+				
 			}
 		});
 
 		AppView = Backbone.View.extend({
 			el: $("body"),
 			initialize: function () {
-				this.books = new Books( null, {view: this });
+				this.books = new Books( null, {view: this});
+				//window.setTimeout(2000);
+				//this.initialise();
 			},
+			
+
+				
 			events: {
 				//alert("before initialize");
 				"click #view-books": "initialise",
 				"click #enter-books": "showPrompt",
 			},
 			showPrompt: function () {
+				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE","display");		
 				var book_author = prompt("who is the author of the book?");
 				var book_isbn = prompt("what is the ISBN of book?");
 				var book_pub = prompt("what is the name of the publication?");
@@ -54,8 +66,9 @@
 				//var book_model = new Book({ author:book_author, isbn: book_isbn, publication: book_pub});
 				//var objc = JSON.stringify(book_model);				
 				console.log(Kundera.createJSONObject(book_model));
-				em.persist(book_model, "Book");
-				this.books.add( book_model );
+				em.persist(Kundera.createJSONObject(book_model), "Book");
+				
+				//this.books.add( book_model );
 			},
 
 			addFriendLi: function (model) {
@@ -66,8 +79,7 @@
 			
 			initialise : function() {
 		        //alert("inside initialise");
-				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE",
-		                        "display");
+				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE","display");
 			//	alert("after initialise");
 
 			}
@@ -108,9 +120,10 @@
 			}
 
     		function selectSuccess(resp){
-         	 //console.log(resp);
+         	 console.log(resp);
 		 obj = Kundera.fromJSONObject(resp);
-         	// console.log(obj);
+         	 console.log(obj);
+		display(obj);
 		//showPrompt(obj)
 		}
 
@@ -123,16 +136,24 @@
 				var array = obj["book"];
 				var html = "<table><th>Author</th><th>ISBN</th><th>Publication</th><th>Options</th>";
 				for (var i in array){
-					//html += "<table>";
-					html += "<tr><td>" + array[i]["author"] + "</td><td>" + array[i]["isbn"] + "</td><td>" +array[i]["publication"] + "</td><td><div><button>Update</button><button>Delete</button></div></td></tr>" 
+				
+					html += "<tr><td>" + array[i]["author"] + "</td><td>" + array[i]["isbn"] + "</td><td>" +array[i]["publication"] + "</td><td><div><button>Update</button><button onClick='deleteRow(" + array[i]["isbn"] +")'>Delete</button></div></td></tr>";
 	
-}
-
-		html += "</html>"
+}	
+		
+		html += "</table></html>"
 		document.getElementById("data").innerHTML = html;		
 
-		} 
+		}
 
+		function deleteRow(id){
+		em.deleteEntity(id, "Book");		
+		}
+
+ 
+function start(){
+Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE","display");
+}
 
 
 </script>

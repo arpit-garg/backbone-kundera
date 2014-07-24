@@ -2,6 +2,10 @@
 <html>
 <head>
 	<title>backbone-kundera test</title>
+	<script type="text/javascript" src="lib/jquery.js"></script>
+	<script type="text/javascript" src="lib/underscore.js"></script>
+	<script type="text/javascript" src="lib/backbone.js"></script>
+	<script type="text/javascript" src="js/kundera.js"></script>	
 </head>
 <body>
 	<div>	
@@ -12,18 +16,16 @@
 	</div>
 	
 	<ul id="friends-list">
-	</ul>
-	<script type="text/javascript" src="lib/jquery.js"></script>
-	<script type="text/javascript" src="lib/underscore.js"></script>
-<script type="text/javascript" src="js/kundera.js"></script>	
-<script type="text/javascript" src="lib/backbone.js"></script>
-	
+	</ul>	
+
 	<script>
 	(function ($) {	
+		jQuery( document ).ready(function(){
+			window.onload = function onStart(){
+				Persistence.createEntityManagerFactory("twissandra", null, "select","display");
+				};
+		});
 		
-jQuery( document ).ready(function() {
-window.setTimeout("start()", 2000);
-	});
 		Book = Backbone.Model.extend({
 			
 			author: null,
@@ -43,32 +45,22 @@ window.setTimeout("start()", 2000);
 			el: $("body"),
 			initialize: function () {
 				this.books = new Books( null, {view: this});
-				//window.setTimeout(2000);
-				//this.initialise();
 			},
 			
 
 				
 			events: {
-				//alert("before initialize");
-				"click #view-books": "initialise",
+				"click #view-books": "selectQueryE",
 				"click #enter-books": "showPrompt",
 			},
 			showPrompt: function () {
-				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE","display");		
 				var book_author = prompt("who is the author of the book?");
 				var book_isbn = prompt("what is the ISBN of book?");
 				var book_pub = prompt("what is the name of the publication?");
 				var book_model = {};
-				book_model["author"] = book_author;
-				book_model["isbn"] = book_isbn;
-				book_model["publication"] = book_pub;
-				//var book_model = new Book({ author:book_author, isbn: book_isbn, publication: book_pub});
-				//var objc = JSON.stringify(book_model);				
-				console.log(Kundera.createJSONObject(book_model));
-				em.persist(Kundera.createJSONObject(book_model), "Book");
-				
-				//this.books.add( book_model );
+				var book_model = new Book({ author:book_author, isbn: book_isbn, publication: book_pub});
+				em.persist(JSON.stringify(book_model), "Book");
+				//this.books.add( objc );
 			},
 
 			addFriendLi: function (model) {
@@ -77,22 +69,22 @@ window.setTimeout("start()", 2000);
 			},
 		
 			
-			initialise : function() {
+			/*initialise : function() {
 		        //alert("inside initialise");
 				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE","display");
 			//	alert("after initialise");
 
-			}
+			}*/
 
 
 
-      		/*	selectQueryE : function() {
-				alert("inside selectQuery");
-				em.createQuery("select * from Book", null,"selectSuccess","selectFailure");
-				alert("inside selectQuery");
+      			selectQueryE : function() {
+				//alert("inside selectQuery");
+				em.createQuery("select b from Book b", null,"selectSuccess","selectFailure");
+				//alert("inside selectQuery");
 			},
 
-		    selectSuccess :function(resp){
+		/*    selectSuccess :function(resp){
 		     	 console.log(resp);
 		     
 			},
@@ -113,16 +105,17 @@ window.setTimeout("start()", 2000);
 	
 	var obj = {};
 
-	function selectQueryE(resp) {
+	/*function selectQueryE(resp) {
 			//alert("inside selectQuery");
 			em.createQuery("select b from Book b", null,"selectSuccess","selectFailure");
 			//alert("inside selectQuery");
-			}
+			} */
+		function select(){}
 
     		function selectSuccess(resp){
-         	 console.log(resp);
+         	 //console.log(resp);
 		 obj = Kundera.fromJSONObject(resp);
-         	 console.log(obj);
+         	 //console.log(obj);
 		display(obj);
 		//showPrompt(obj)
 		}
@@ -138,7 +131,6 @@ window.setTimeout("start()", 2000);
 				for (var i in array){
 				
 					html += "<tr><td>" + array[i]["author"] + "</td><td>" + array[i]["isbn"] + "</td><td>" +array[i]["publication"] + "</td><td><div><button>Update</button><button onClick='deleteRow(" + array[i]["isbn"] +")'>Delete</button></div></td></tr>";
-	
 }	
 		
 		html += "</table></html>"
@@ -151,12 +143,11 @@ window.setTimeout("start()", 2000);
 		}
 
  
-function start(){
-Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE","display");
-}
 
 
 </script>
+
+
 <div id ="data"></div>
 </body>
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>I have a back bone</title>
+</head>
+<body>
+<button id="add-friend">Add Friend</button>
+<ul id="friends-list">
+</ul>
+	<script type="text/javascript" src="lib/jquery.js"></script>
+	<script type="text/javascript" src="lib/underscore.js"></script>
+	<script type="text/javascript" src="lib/backbone.js"></script>
+	<script type="text/javascript" src="js/kundera.js"></script>
+	<script type="text/javascript" src="backbone.kundera.js"></script>
+<script>
+(function ($) {
+  
+	  Book = Backbone.Model.extend({
+		  author: null,
+		  isbn: null,
+	      publication: null
+	  });
+  
+  	Books = Backbone.Collection.extend({
+  
+	    initialize: function (models, options) {
+	      this.bind("add", options.view.addFriendLi);
+	  
+	    }
+	  });
+	  
+	 // var b = new Books;
+	  
+	AppView = Backbone.View.extend({
+	    el: $("body"),
+	    
+	   initialize: function () {
+	      this.books = new Books( null, { view: this });
+	    },
+	   
+	   events: {
+	      "click #add-friend":  "showPrompt",
+	    },
+	    
+	   showPrompt: function () {
+	      var book_author = prompt("who is the author of the book?");
+	      var book_isbn = prompt("what is the ISBN of book?");
+	      var book_pub = prompt("what is the name of the publication?");
+	      var book_model = {};
+	      var book_model = new Book({ author:book_author, isbn: book_isbn, publication: book_pub})
+		  //create(JSON.stringify(book_model));
+		  //create(null);
+		  this.books.add( book_model );
+		  	books.create(book_model);
+		 
+	    	console.log(JSON.stringify(book_model));
+			
+	    },
+	    
+	   addFriendLi: function (model) {
+	  
+	      $("#friends-list").append("<li>" + model.get('author') + "</li><li>" + model.get('isbn') + "</li><li>" + model.get('publication') + "</li>");
+	    }
+	  });
+	  
+	  var appview = new AppView;
+	})(jQuery);
+</script>
+</body>
+</html>

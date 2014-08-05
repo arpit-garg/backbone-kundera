@@ -13,13 +13,30 @@
   }
  }(this, function(Backbone, _) {
 
-	window.onload = function onStart(){
-		Persistence.createEntityManagerFactory("twissandra", null, "select","display");
-	};
-	
-	Backbone.kundera = function() {
 
-		create : function(model) {
+ 	window.onload = function onStart(){
+		Persistence.createEntityManagerFactory("cassandra_pu", null, "select","display");
+	};
+
+ 	var id_counter = 1;
+Backbone.sync = function(method, model) {
+  console.log("I've been passed " + method + " with " + JSON.stringify(model));
+  if(method === 'create'){ 
+  	model.set('id', id_counter++); 
+  	var kobj = JSON.stringify(model)
+	em.persist(kobj, "Book");
+  }
+};
+}));
+
+
+
+	
+	
+	
+	/*Backbone.kundera = function() {
+
+		create: function(model) {
 			alert("Hello World");
 			//var kobj = JSON.stringify(model)
 			//em.persist(kobj, "Book");
@@ -31,7 +48,7 @@
 
 		destroy : function() {
 
-		}
+		},
 
 		update : function() {
 
@@ -61,7 +78,7 @@
 	    	case "update":  resp = store.update(model);                            break;
 	    	case "delete":  resp = store.destroy(model);                           break;
   		}
-	}
+	};
 			
 	}));		
 				
@@ -92,17 +109,17 @@
 			selectFailure :function(resp){
 		     	 console.log(resp);
 		     
-			}  */
+			}  
 
 		
 
 	var obj = {};
 
-	/*function selectQueryE(resp) {
+	function selectQueryE(resp) {
 			//alert("inside selectQuery");
 			em.createQuery("select b from Book b", null,"selectSuccess","selectFailure");
 			//alert("inside selectQuery");
-			} */
+			} 
 		function select(){}
 
     		function selectSuccess(resp){
@@ -133,5 +150,5 @@
 		function deleteRow(id){
 		em.deleteEntity(id, "Book");		
 		}
-
+*/
  

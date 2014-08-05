@@ -15,18 +15,59 @@
 
 
  	window.onload = function onStart(){
-		Persistence.createEntityManagerFactory("cassandra_pu", null, "select","display");
+ 		Kundera.setKunderaRestUrl("http://localhost:8080/KunderaJSRest");
+		Persistence.createEntityManagerFactory("twissandra", null, "select","display");
 	};
 
  	var id_counter = 1;
-Backbone.sync = function(method, model) {
+/*Backbone.sync = function(method, model) {
   console.log("I've been passed " + method + " with " + JSON.stringify(model));
   if(method === 'create'){ 
   	model.set('id', id_counter++); 
   	var kobj = JSON.stringify(model)
 	em.persist(kobj, "Book");
   }
+};*/
+Backbone.sync = function(method, model, options) {
+
+	function success(result) {
+		if(options.success) {
+			options.success(result);
+		}
+	}
+
+	function error(result) {
+		if(options.error) {
+			options.error(result);
+		}
+	}
+
+	options || (options = {});
+
+	switch(method) {
+		case 'create':
+			var kobj = JSON.stringify(model)
+			return em.persist(kobj, "Book");
+			break;
+		case 'delete':
+			break;
+		case 'update':
+			break;
+		case 'fetch':		
+			em.createQuery("select b from Book b", null,"selectSuccess","selectFailure");
+			 function selectSuccess(resp){
+				console.log(resp);
+			};
+
+			function selectFailure(resp){
+         		 console.log(resp);
+			};
+			break;
+
+	}	
 };
+
+
 }));
 
 

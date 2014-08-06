@@ -1,5 +1,4 @@
-
-(function (root, factory) {
+$.getScript('js/kundera.js', function(root, factory) {
   if (typeof exports === 'object' && typeof require === 'function') {
     module.exports = factory(require("backbone"), require('underscore'));
   } else if (typeof define === "function" && define.amd) {
@@ -15,12 +14,17 @@
 
 
  	window.onload = function onStart(){
- 		Kundera.setKunderaRestUrl("http://localhost:8080/KunderaJSRest");
+ 		var imported = document.createElement('script');
+		imported.src = 'js/kundera.js';
+		document.body.appendChild(imported);
+
+		Kundera.setKunderaRestUrl("http://localhost:8080/KunderaJSRest");
 		Persistence.createEntityManagerFactory("twissandra", null, "select","display");
+ 		
 	};
 
- 	var id_counter = 1;
-/*Backbone.sync = function(method, model) {
+ 	/*var id_counter = 1;
+Backbone.sync = function(method, model) {
   console.log("I've been passed " + method + " with " + JSON.stringify(model));
   if(method === 'create'){ 
   	model.set('id', id_counter++); 
@@ -47,26 +51,25 @@ Backbone.sync = function(method, model, options) {
 	switch(method) {
 		case 'create':
 			var kobj = JSON.stringify(model)
-			return em.persist(kobj, "Book");
+			 em.persist(kobj, "Book");
 			break;
 		case 'delete':
 			break;
 		case 'update':
 			break;
-		case 'fetch':		
+		case 'read':		
 			em.createQuery("select b from Book b", null,"selectSuccess","selectFailure");
-			 function selectSuccess(resp){
-				console.log(resp);
-			};
-
-			function selectFailure(resp){
-         		 console.log(resp);
-			};
 			break;
 
 	}	
 };
+	selectSuccess = function(resp){
+				console.log(resp);
+			};
 
+	selectFailure = function(resp){
+         		 console.log(resp);
+			};
 
 }));
 

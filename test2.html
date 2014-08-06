@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="lib/jquery.js"></script>
 	<script type="text/javascript" src="lib/underscore.js"></script>
 	<script type="text/javascript" src="lib/backbone.js"></script>
-	<script type="text/javascript" src="js/kundera.js"></script>
+	<!--<script type="text/javascript" src="js/kundera.js"></script>-->
 	<script type="text/javascript" src="backbone.kundera.js"></script>
 <script>
 (function ($) {
@@ -48,8 +48,7 @@
 	      var book_pub = prompt("what is the name of the publication?");
 	      var book_model = {};
 	      var book_model = new Book({ author:book_author, isbn: book_isbn, publication: book_pub})
-		  //create(JSON.stringify(book_model));
-		  //create(null);
+		  
 		  	this.books.add(book_model);
 		  	this.books.create(book_model);
 		  	this.books.fetch(book_model);

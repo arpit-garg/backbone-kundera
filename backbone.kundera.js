@@ -1,4 +1,5 @@
-$.getScript('js/kundera.js', function(root, factory) {
+//$.getScript('js/kundera.js', 
+(function(root, factory) {
   if (typeof exports === 'object' && typeof require === 'function') {
     module.exports = factory(require("backbone"), require('underscore'));
   } else if (typeof define === "function" && define.amd) {
@@ -10,29 +11,28 @@ $.getScript('js/kundera.js', function(root, factory) {
   } else {
     factory(Backbone, _);
   }
- }(this, function(Backbone, _) {
+ }(this, function(Backbone, _) { 
+
 
 
  	window.onload = function onStart(){
+ 		alert("in kundera");
  		var imported = document.createElement('script');
-		imported.src = 'js/kundera.js';
-		document.body.appendChild(imported);
+		imported.type = 'text/javascript';
+		imported.src = 'http://localhost:8080/KunderaJSRest/kundera.js';
+		imported.setAttribute('async', true);
+		document.head.appendChild(imported);
+		//$.getScript('js/kundera.js');
 
-		Kundera.setKunderaRestUrl("http://localhost:8080/KunderaJSRest");
-		Persistence.createEntityManagerFactory("twissandra", null, "select","display");
+
+
+
+		//Kundera.setKunderaRestUrl("http://localhost:8080/KunderaJSRest");
+		//Persistence.createEntityManagerFactory("twissandra", null, "select","display");
  		
 	};
 
- 	/*var id_counter = 1;
-Backbone.sync = function(method, model) {
-  console.log("I've been passed " + method + " with " + JSON.stringify(model));
-  if(method === 'create'){ 
-  	model.set('id', id_counter++); 
-  	var kobj = JSON.stringify(model)
-	em.persist(kobj, "Book");
-  }
-};*/
-Backbone.sync = function(method, model, options) {
+ 	Backbone.sync = function(method, model, options) {
 
 	function success(result) {
 		if(options.success) {
@@ -195,4 +195,3 @@ Backbone.sync = function(method, model, options) {
 		em.deleteEntity(id, "Book");		
 		}
 */
- 

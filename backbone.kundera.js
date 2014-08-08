@@ -14,121 +14,102 @@
  }(this, function(Backbone, _) { 
 
 
-
+window.kunderaResponse;
  	window.onload = function onStart(){
- 		alert("in kundera");
+ 	/*	alert("in kundera");
  		var imported = document.createElement('script');
 		imported.type = 'text/javascript';
 		imported.src = 'http://localhost:8080/KunderaJSRest/kundera.js';
 		imported.setAttribute('async', true);
 		document.head.appendChild(imported);
-		//$.getScript('js/kundera.js');
+		//$.getScript('js/kundera.js'); */
 
 
 
 
-		//Kundera.setKunderaRestUrl("http://localhost:8080/KunderaJSRest");
-		//Persistence.createEntityManagerFactory("twissandra", null, "select","display");
+		Kundera.setKunderaRestUrl("http://localhost:8080/KunderaJSRest");
+		Persistence.createEntityManagerFactory("twissandra", null, "select","display");
  		
 	};
+	//Backbone.Kundera = function()
+
+
+
 
  	Backbone.sync = function(method, model, options) {
 
-	function success(result) {
-		if(options.success) {
-			options.success(result);
+ 		
+
+		success = function (result) {
+			
+			/*if(options.success) */{
+				options.success(result);
+
+			}
+			//kunderaResponse = result;
+			//console.log(options.success);
+			console.log(result);
+
 		}
-	}
 
-	function error(result) {
-		if(options.error) {
-			options.error(result);
+		error = function(result) {
+			if(options.error) {
+				options.error(result);
+			}
 		}
-	}
 
-	options || (options = {});
+		options || (options = {});
 
-	switch(method) {
-		case 'create':
-			var kobj = JSON.stringify(model)
-			 em.persist(kobj, "Book");
-			break;
-		case 'delete':
-			break;
-		case 'update':
-			break;
-		case 'read':		
-			em.createQuery("select b from Book b", null,"selectSuccess","selectFailure");
-			break;
+		switch(method) {
+			case 'create':
+				var kobj = JSON.stringify(model)
+				 em.persist(kobj, "Book");
+				break;
+			case 'delete':
+					alert("before");
+					em.deleteEntity(id, "Book");		
+					alert("after");
 
-	}	
-};
-	selectSuccess = function(resp){
-				console.log(resp);
+				break;
+			case 'update':
+				break;
+			case 'read':
+			    var response;		
+				return em.createQuery("select b from Book b", null);
+				//return "Hello";
+				selectSuccess = function(resp){
+					success(resp);
+					//kunderaResponse = resp;
+					obj = Kundera.fromJSONObject(resp);
+					//options.success(response);
+
+					//console.log(obj);
+				};
+				selectFailure = function(resp){
+         			 return resp;
+				};
+				//console.log(kunderaResponse);
+				//return response;
+				break;
+
+		}	
+		//console.log(obj);
+		//return obj;
+	};
+	
+	//var obj = {};
+	/*selectSuccess = function(resp){
+				obj = Kundera.fromJSONObject(resp);
+				return obj;
+				//console.log(obj);
+
 			};
 
 	selectFailure = function(resp){
-         		 console.log(resp);
-			};
+         		 return resp;
+			};*/
 
-}));
-
-
-
-	
-	
-	
-	/*Backbone.kundera = function() {
-
-		create: function(model) {
-			alert("Hello World");
-			//var kobj = JSON.stringify(model)
-			//em.persist(kobj, "Book");
-		},
-
-		read : function() {
-			alert("Hello World!");
-		},
-
-		destroy : function() {
-
-		},
-
-		update : function() {
-
-		}
-
-
-	};	
-
-
-
-	Backbone.kundera.sync = function(method, model, options) {
-		 var store = model;
-
-		 if (typeof options == 'function') {
-    		options = {
-      			success: options,
-      			error: error
-    		};
-  		}
-
-
-  		var resp;
-
-  		switch(method) {
-	  		case "read":    resp = model.id != undefined ? store.find(model) : store.findAll(); break;
-	    	case "create":  resp = store.create(model);                            break;
-	    	case "update":  resp = store.update(model);                            break;
-	    	case "delete":  resp = store.destroy(model);                           break;
-  		}
-	};
-			
-	}));		
-				
-
-		
-			
+}));		
 			/*initialise : function() {
 		        //alert("inside initialise");
 				Persistence.createEntityManagerFactory("twissandra", null, "selectQueryE","display");

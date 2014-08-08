@@ -4,13 +4,18 @@
 	<title>I have a back bone</title>
 </head>
 <body>
-<button id="add-friend">Add Friend</button>
+	<div>
+		<button id="add-book">Add Friend</button>
+		<button id="view-book">Display Books</button>
+		<button id="del-book">Delete Books</button>
+		<button id="update-book">Update</button>
+	</div>
 <ul id="friends-list">
 </ul>
 	<script type="text/javascript" src="lib/jquery.js"></script>
 	<script type="text/javascript" src="lib/underscore.js"></script>
 	<script type="text/javascript" src="lib/backbone.js"></script>
-	<!--<script type="text/javascript" src="js/kundera.js"></script>-->
+	<script type="text/javascript" src="js/kundera.js"></script>
 	<script type="text/javascript" src="backbone.kundera.js"></script>
 <script>
 (function ($) {
@@ -24,7 +29,7 @@
   	Books = Backbone.Collection.extend({
   
 	    initialize: function (models, options) {
-	      this.bind("add", options.view.addFriendLi);
+	      this.bind("add");
 	  
 	    }
 	  });
@@ -39,7 +44,10 @@
 	    },
 	   
 	   events: {
-	      "click #add-friend":  "showPrompt",
+	      "click #add-book":  "showPrompt",
+	      "click #view-book": "display", 
+	      "click #del-book": "delOnEnter",
+	      "click #update-book": "updateOnEnter", 
 	    },
 	    
 	   showPrompt: function () {
@@ -50,17 +58,39 @@
 	      var book_model = new Book({ author:book_author, isbn: book_isbn, publication: book_pub})
 		  
 		  	this.books.add(book_model);
-		  	//this.books.create(book_model);
-		  	//this.books.fetch(book_model);
+			this.books.create(book_model);
+		  	
 		 
 	    	console.log(JSON.stringify(book_model));
 			
+	    },
+
+	    display: function()  {
+	 	 	var obj = {};
+	  		obj = this.books.fetch();
+	  		var promise = this.books.fetch({
+			    success: function(model, response, options) {
+			    	console.log("Success");
+			        // Upon success, this function will be executed.
+			    },
+			    error: function(model, error, options) {
+			    	console.log("error");
+			        // Upon error, this function will be executed.
+			    }
+			});
+
+	   		console.log(obj);   
+	    },
+
+	    delOnEnter: function () {
+	    	del_isbn = prompt("Enter ISBN to be deleted");
+	    	this.model.destroy("del_isbn");
 	    },
 	    
 	   addFriendLi: function (model) {
 	  
 	      $("#friends-list").append("<li>" + model.get('author') + "</li><li>" + model.get('isbn') + "</li><li>" + model.get('publication') + "</li>");
-	    }
+	    },
 	  });
 	  
 	  var appview = new AppView;

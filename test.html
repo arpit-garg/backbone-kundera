@@ -2,10 +2,7 @@
 <html>
 <head>
 	<title>backbone-kundera test</title>
-	<script type="text/javascript" src="lib/jquery.js"></script>
-	<script type="text/javascript" src="lib/underscore.js"></script>
-	<script type="text/javascript" src="lib/backbone.js"></script>
-	<script type="text/javascript" src="js/kundera.js"></script>	
+		
 </head>
 <body>
 	<div>	
@@ -17,19 +14,23 @@
 	
 	<ul id="friends-list">
 	</ul>	
+	<script type="text/javascript" src="lib/jquery.js"></script>
+	<script type="text/javascript" src="lib/underscore.js"></script>
+	<script type="text/javascript" src="lib/backbone.js"></script>
+	<script type="text/javascript" src="js/kundera.js"></script>
 
 	<script>
 	(function ($) {	
-		jQuery( document ).ready(function(){
-			window.onload = function onStart(){
-				Persistence.createEntityManagerFactory("twissandra", null, "select","display");
-				};
-		});
 		
+		window.onload = function onStart(){
+			Kundera.setKunderaRestUrl("http://localhost:8080/KunderaJSRest");
+			Persistence.createEntityManagerFactory("twissandra", null, "select","display");
+		};
+				
 		Book = Backbone.Model.extend({
 			
 			author: null,
-			isbn: null,
+			title: null,
 			publication: null
 		});
 
@@ -58,14 +59,14 @@
 				var book_isbn = prompt("what is the ISBN of book?");
 				var book_pub = prompt("what is the name of the publication?");
 				var book_model = {};
-				var book_model = new Book({ author:book_author, isbn: book_isbn, publication: book_pub});
+				var book_model = new Book({ author:book_author, title: book_isbn, publication: book_pub});
 				em.persist(JSON.stringify(book_model), "Book");
 				//this.books.add( objc );
 			},
 
 			addFriendLi: function (model) {
 				
-				$("#friends-list").append("<li>" + model.get('author') + "</li><li>" + model.get('isbn') + "</li><li>" + model.get('publication') + "</li>");
+				$("#friends-list").append("<li>" + model.get('author') + "</li><li>" + model.get('title') + "</li><li>" + model.get('publication') + "</li>");
 			},
 		
 			
@@ -117,7 +118,6 @@
 		 obj = Kundera.fromJSONObject(resp);
          	 //console.log(obj);
 		display(obj);
-		//showPrompt(obj)
 		}
 
 
@@ -127,10 +127,10 @@
 
 		function display(obj) {
 				var array = obj["book"];
-				var html = "<table><th>Author</th><th>ISBN</th><th>Publication</th><th>Options</th>";
+				var html = "<table><th>Author</th><th>TITLE</th><th>Publication</th><th>Options</th>";
 				for (var i in array){
 				
-					html += "<tr><td>" + array[i]["author"] + "</td><td>" + array[i]["isbn"] + "</td><td>" +array[i]["publication"] + "</td><td><div><button>Update</button><button onClick='deleteRow(" + array[i]["isbn"] +")'>Delete</button></div></td></tr>";
+					html += "<tr><td>" + array[i]["author"] + "</td><td>" + array[i]["title"] + "</td><td>" +array[i]["publication"] + "</td><td><div><button>Update</button><button onClick='deleteRow(" + array[i]["title"] +")'>Delete</button></div></td></tr>";
 }	
 		
 		html += "</table></html>"

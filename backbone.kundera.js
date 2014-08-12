@@ -81,7 +81,7 @@ window.kunderaResponse;
 					success(resp);
 					//kunderaResponse = resp;
 					obj = Kundera.fromJSONObject(resp);
-					//options.success(response);
+					options.success(response);
 
 					//console.log(obj);
 				};

@@ -22,7 +22,7 @@
   
 	  Book = Backbone.Model.extend({
 		  author: null,
-		  isbn: null,
+		  title: null,
 	      publication: null
 	  });
   
@@ -55,7 +55,7 @@
 	      var book_isbn = prompt("what is the ISBN of book?");
 	      var book_pub = prompt("what is the name of the publication?");
 	      var book_model = {};
-	      var book_model = new Book({ author:book_author, isbn: book_isbn, publication: book_pub})
+	      var book_model = new Book({ author:book_author, title: book_isbn, publication: book_pub})
 		  
 		  	this.books.add(book_model);
 			this.books.create(book_model);

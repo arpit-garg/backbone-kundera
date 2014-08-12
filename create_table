@@ -1,0 +1,1 @@
+create table "TODOS" (  title text,  "order" int,  "done" text,  PRIMARY KEY (order));

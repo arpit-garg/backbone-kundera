@@ -181,7 +181,7 @@ $(function(){
       this.footer = this.$('footer');
       this.main = $('#main');
 
-      Todos.fetch();
+     this.deferred = Todos.fetch();
     },
 
     // Re-rendering the App just means refreshing the statistics -- the rest

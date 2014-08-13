@@ -23,7 +23,10 @@
     Kundera.setKunderaRestUrl("http://localhost:8080/KunderaJSRest");
     Persistence.createEntityManagerFactory("twissandra", null, "select","display");
   };
+select = function (){};
+var result = [];
 
+var dfd = $.Deferred();
 
 // A simple module to replace `Backbone.sync` with *localStorage*-based
 // persistence. Models are given GUIDS, and saved into a JSON object. Simple
@@ -117,19 +120,26 @@ extend(Backbone.LocalStorage.prototype, {
 
   // Return the array of all models currently in storage.
   findAll: function() {
-    var result = [];
-    for (var i = 0, id, data; i < this.records.length; i++) {
+     result = [{title: "qwerty",order2: 1,done: false}, {title: "anything",order2: 2,done:true}];
+    // alert("inside findAll");
+    console.log(result);
+    window.setTimeout(function(){em.createQuery("select b from todos b", null,"selectSuccess","selectFailure");}, 2000);
+    dfd.done();
+  /*  for (var i = 0, id, data; i < this.records.length; i++) {
       id = this.records[i];
       data = this.serializer.deserialize(this.localStorage().getItem(this._itemName(id)));
       if (data != null) result.push(data);
-    }
+    } */
+
     return result;
   },
 
   // Delete a model from `this.data`, returning it.
   destroy: function(model) {
-    window.setTimeout(function() {em.deleteEntity(model.get("order2"), "todos");}, 10000);
-    
+    //window.setTimeout(function() {em.deleteEntity(model.get("order2"), "todos");}, 10000);
+    id = model.get("order2");
+    console.log(id);
+    em.deleteEntity(id,"todos");
 
     /*this.localStorage().removeItem(this._itemName(model.id));
     var modelId = model.id.toString();
@@ -174,6 +184,26 @@ extend(Backbone.LocalStorage.prototype, {
   }
 
 });
+dfd
+
+  .done(
+selectSuccess = function(resp){
+  console.log(resp);
+  var obj = {};
+  obj = Kundera.fromJSONObject(resp);
+  var array = obj["todos"];
+/*  for(var i in array){
+    result.push(array[i]);
+  } */
+    //dfd.resolve("resp");
+
+  result.push({title:"hello",order2: 7, done:false});
+  dfd.done();
+  console.log(result);
+  //result.push(obj);
+  //return result;
+};
+
 
 // localSync delegate to the model or collection's
 // *localStorage* property, which should be an instance of `Store`.
@@ -191,7 +221,8 @@ Backbone.LocalStorage.sync = window.Store.sync = Backbone.localSync = function(m
 
     switch (method) {
       case "read":
-        resp = model.id != undefined ? store.find(model) : store.findAll();
+        resp = store.findAll();
+        //model.id != undefined ? store.find(model) : 
         break;
       case "create":
         resp = store.create(model);
